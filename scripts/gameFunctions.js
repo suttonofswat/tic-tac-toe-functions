@@ -6,11 +6,23 @@
  *
  * valid options include: '1', 'one', '2', or 'two'.
  * The function should be case insensitive, so 'one' and 'ONE' should both
- * result in true.
+ * result in 1.
+ tools: if/else/elseif
+ .toLowerCase()/toUppercase()
+ parseInt
  */
 function validateGameType(gameTypeString) {
-
-}
+	if(typeof gameTypeString === 'object' ){
+		return false;
+	}
+	if(gameTypeString == 1 || gameTypeString.toLowerCase() === 'one'){
+		return 1;
+	}
+	else if(gameTypeString == 2 || gameTypeString.toLowerCase() === 'two'){
+		return 2;
+	}
+	return false;
+} 
 
 /*
  * Returns the players name if it is a valid name. Valid names must only contain
@@ -18,13 +30,45 @@ function validateGameType(gameTypeString) {
  * false if the name is not valid.
  */
 function validateName(name) {
+	var valid = false;
 
+
+	if(typeof name === 'object' ){
+		return false;
+	}
+	
+	for(var i = 0; i < name.length; i++){
+		var singleChar = name.charCodeAt(i);
+			if((singleChar === 45) || (singleChar === 32) || (singleChar >= 65  && singleChar <= 90) || (singleChar >= 95 && singleChar >= 122)) {
+		} valid = true;
+	}
+
+	if(valid === true){
+		return name;
+	} 
+
+	return false;
 }
 
 /*
  * Randomly generates and returns a name for a computer player.
  */
 function generateComputerName() {
+	var x = Math.random();
+	if (x < .2){
+		return 'Abby';
+	}
+	else if (x <.4){
+		return 'Sally';
+	}
+	else if (x < .6){
+		return 'Jenny';
+	}else if (x < .8){
+		return 'bob';
+	} else{
+		return 'guy';
+	}
+
 
 }
 
@@ -50,7 +94,17 @@ function generateComputerName() {
  * exception.
  */
 function parseMove(moveString) {
-
+	if (moveString === undefined || moveString.length !== 3 || typeof moveString === 'object' || typeof moveString !== 'string' || moveString[1]!==' ' || isNaN(moveString[0]) || isNaN(moveString[2])){
+			throw 'Invalid input: the move must be in the format "x y"';
+	}
+	
+		
+		var moveObj = {
+		 x: parseInt(moveString[0]-1),
+		 y:parseInt(moveString[2]-1)
+		};
+		return moveObj;
+		
 }
 
 /*
@@ -69,7 +123,17 @@ function parseMove(moveString) {
  */
 function validateMove(moveObject, gameBoard) {
 
+
+	if(moveObject.x < 0 || moveObject.x > 2 || moveObject.y  < 0 || moveObject.y >2){
+		throw 'Invalid move: the coordinates are outside the game board';
+	} 
+
+	else if (gameBoard[moveObject.y][moveObject.x] !== ' '){
+		throw 'Invalid move: that spot is already taken'
+	}
+	return moveObject;
 }
+
 
 /*
  * Convert the gameBoard matrix to a string. You can use \n to denote a newline
@@ -90,6 +154,7 @@ function validateMove(moveObject, gameBoard) {
  *   ~~~~~~~~~~~~~
  */
 function getGameBoardString(gameBoard) {
+return '     1   2   3 \n  ~~~~~~~~~~~~~\n1 | '+ gameBoard[0][0] +' | '+ gameBoard[0][1] +' | '+ gameBoard[0][2] +' |\n  ~~~~~~~~~~~~~\n2 | '+ gameBoard[1][0] +' | '+ gameBoard[1][1] +' | '+ gameBoard[1][2] +' |\n  ~~~~~~~~~~~~~\n3 | '+ gameBoard[2][0] +' | '+ gameBoard[2][1] +' | '+ gameBoard[2][2] +' |\n  ~~~~~~~~~~~~~\n'
 
 }
 
@@ -98,7 +163,7 @@ function getGameBoardString(gameBoard) {
  * matrix, make the move on the gameBoard and return the gameBoard.
  */
 function makeMove(playerString, moveObject, gameBoard) {
-
+	return gameBoard[moveObject.x][moveObject.y] = playerString;
 }
 
 /*
@@ -107,7 +172,18 @@ function makeMove(playerString, moveObject, gameBoard) {
  * For example, the game board might be 3x3, 4x4, or 5x7.
  */
 function getEmptySpaceCount(gameBoard) {
-
+	var count = 0;
+	for(var i = 0; i < gameBoard.length; i++){
+		for (var j = 0; j < gameBoard[i].length; j++){
+			if (gameBoard[i][j] === ' '){
+				count += 1;
+			}
+			else{
+				continue;
+			}
+		}
+	}
+	return count;
 }
 
 /*
@@ -116,7 +192,12 @@ function getEmptySpaceCount(gameBoard) {
  * 'O' and vice versa.
  */
 function getNextPlayer(currentPlayer) {
-
+	if (currentPlayer === 'X'){
+		return 'O';
+	}
+	else if (currentPlayer === 'O'){
+		return 'X';
+	}
 }
 
 /*
@@ -124,7 +205,15 @@ function getNextPlayer(currentPlayer) {
  * gameBoard matrix. If there is no winner than the function should return null.
  */
 function getWinner(gameBoard) {
-	
+	if((gameBoard[0][0]==='X' && gameBoard[0][1]==='X' && gameBoard[0][2]==='X') || (gameBoard[1][0]==='X' && gameBoard[1][1]==='X' && gameBoard[1][2]==='X') || (gameBoard[2][0]==='X' && gameBoard[2][1]==='X' && gameBoard[2][2]==='X') || (gameBoard[0][0]==='X' && gameBoard[1][0]==='X' && gameBoard[2][0]==='X') || (gameBoard[0][1]==='X' && gameBoard[1][1]==='X' && gameBoard[2][1]==='X') || (gameBoard[0][2]==='X' && gameBoard[1][2]==='X' && gameBoard[2][2]==='X') || (gameBoard[0][0]==='X' && gameBoard[1][1]==='X' && gameBoard[2][2]==='X') || (gameBoard[0][2]==='X' && gameBoard[1][1]==='X' && gameBoard[2][0]==='X')) {
+		return 'X';
+	}
+	else if((gameBoard[0][0]==='O' && gameBoard[0][1]==='O' && gameBoard[0][2]==='O') || (gameBoard[1][0]==='O' && gameBoard[1][1]==='O' && gameBoard[1][2]==='O') || (gameBoard[2][0]==='O' && gameBoard[2][1]==='O' && gameBoard[2][2]==='O') || (gameBoard[0][0]==='O' && gameBoard[1][0]==='O' && gameBoard[2][0]==='O') || (gameBoard[0][1]==='O' && gameBoard[1][1]==='O' && gameBoard[2][1]==='O') || (gameBoard[0][2]==='O' && gameBoard[1][2]==='O' && gameBoard[2][2]==='O') || (gameBoard[0][0]==='O' && gameBoard[1][1]==='O' && gameBoard[2][2]==='O') || (gameBoard[0][2]==='O' && gameBoard[1][1]==='O' && gameBoard[2][0]==='O')) {
+		return 'O';
+	}
+	else{
+		return null;
+	}
 }
 
 /*
@@ -135,7 +224,16 @@ function getWinner(gameBoard) {
  * insensitive, so it should accept both 'Y' and 'y' for example.
  */
 function validateYesNo(yesNoString) {
-
+	yesNoString = yesNoString.toLowerCase();
+	if (yesNoString === 'y' || yesNoString === 'yes'){
+		return true;
+	}
+	else if (yesNoString === 'n' || yesNoString === 'no'){
+		return false;
+	}
+	else{
+		return null;
+	}
 }
 
 /*
